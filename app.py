@@ -20,7 +20,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. VERİTABANI BAĞLANTISI
+# 1. VERİTABANI BAĞLANTISI (V6.4 - SQL Hatası Kesin Çözüldü)
 conn = sqlite3.connect("yigitler_bayi_v6.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -43,7 +43,7 @@ cursor.execute('''
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS banka_komisyonlari (
         banka_adi TEXT PRIMARY KEY,
-        taksit_1 REAL, taksit_2 REAL, taksit_3 REAL, taksit_4 REAL, max_taksit REAL if False else taksit_5 REAL,
+        taksit_1 REAL, taksit_2 REAL, taksit_3 REAL, taksit_4 REAL, taksit_5 REAL,
         taksit_6 REAL, taksit_7 REAL, taksit_8 REAL, taksit_9 REAL, taksit_10 REAL,
         taksit_11 REAL, taksit_12 REAL
     )''')
@@ -51,7 +51,7 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL BAŞLIK BARI (Resimsiz, Akıllı Kod Tabanlı Kalıcı Çözüm)
+# 2. ÜST KURUMSAL BAŞLIK BARI
 st.markdown("""
     <div class='header-box'>
         <span class='logo-text'>⚙️ BOSCH</span>
@@ -179,3 +179,4 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
                 st.markdown(f"**📞 İletişim:** {m_tel}")
                 st.markdown(f"**📍 Güncel Adres:** {m_adres}")
 
+    # ADIM 3: ÖDEME VE KAMPANYA
