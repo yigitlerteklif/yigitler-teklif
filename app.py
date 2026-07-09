@@ -48,12 +48,12 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI
+# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Kalıcı ve Resmi Linklerle Yenilendi)
 st.markdown("""
     <div style='display: flex; justify-content: space-between; align-items: center; background-color: #0f2c59; padding: 15px 30px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
-        <img src='https://wikimedia.org' width='110' style='filter: brightness(0) invert(1);'>
+        <img src='https://githubusercontent.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
         <h1 style='text-align: center; color: white; margin: 0; font-family: sans-serif; font-size: 26px; font-weight: bold; letter-spacing: 1px;'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
-        <img src='https://istikbal.com.tr' width='130' style='background-color:white; padding:5px; border-radius:5px;'>
+        <img src='https://githubusercontent.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
     </div>
 """, unsafe_allow_html=True)
 
@@ -61,7 +61,7 @@ st.markdown("""
 st.sidebar.markdown("<h2 style='color:#0f2c59; text-align:center;'>📱 Menü</h2>", unsafe_allow_html=True)
 sayfa = st.sidebar.radio("İşlem Yapılacak Ekran:", ["📝 Teklif Oluştur (Satış)", "📊 Merkezi CRM & Takip Panel", "🔄 Merkez - Excel Yükleme Odası"])
 
-# 3. SAYFA: ÇOKLU EXCEL YÜKLEME ODASI (İstediğiniz Sütun Başlığı Açıklamaları Eklendi)
+# 3. SAYFA: ÇOKLU EXCEL YÜKLEME ODASI
 if sayfa == "🔄 Merkez - Excel Yükleme Odası":
     st.header("🔄 Gelişmiş Excel Veri Giriş ve Finans Odası")
     st.markdown("---")
@@ -69,7 +69,6 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
     c_ex1, c_ex2 = st.columns(2)
     with c_ex1:
         st.subheader("📦 1. Ürün Portföyü Yükle")
-        # İsteğiniz üzerine eklenen 1 nolu kutu açıklaması
         st.info("Sütun Başlıkları: 'urun_kodu', 'urun_adi', 'grup1_marka', 'grup2_kategori', 'brut_maliyet', 'fiyat_farki', 'satis_fiyati', 'lojistik_maliyet'")
         urun_dosya = st.file_uploader("Ürün Excel Listesini Seçin", type=["xlsx", "xls"], key="u_key")
         if urun_dosya:
@@ -98,7 +97,6 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
 
     with c_ex2:
         st.subheader("💳 2. Banka Taksit Matrisi Yükle")
-        # İsteğiniz üzerine eklenen 2 nolu kutu açıklaması
         st.info("Sütun Başlıkları: 'banka_adi', 'taksit_1', 'taksit_2', ..., 'taksit_12'")
         komisyon_dosya = st.file_uploader("Banka Komisyon Excel Listesini Seçin", type=["xlsx", "xls"], key="k_key")
         if komisyon_dosya:
