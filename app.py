@@ -48,14 +48,18 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Hata Vermeyen Yeni Resim Linkleri)
-st.markdown("""
-    <div style='display: flex; justify-content: space-between; align-items: center; background-color: #0f2c59; padding: 15px 30px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
-        <img src='https://pixabay.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
-        <h1 style='text-align: center; color: white; margin: 0; font-family: sans-serif; font-size: 26px; font-weight: bold; letter-spacing: 1px;'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
-        <img src='https://pixabay.com' width='60' style='background-color:white; padding:5px; border-radius:3px; margin-right:30px;'>
-    </div>
-""", unsafe_allow_html=True)
+# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Güvenli st.columns ve st.image Altyapısına Geçildi)
+logo_bg = st.container()
+with logo_bg:
+    col_l1, col_l2, col_l3 = st.columns([1, 3, 1])
+    with col_l1:
+        st.image("https://pixabay.com", width=140)
+    with col_l2:
+        st.markdown("<h1 style='text-align: center; color: #0f2c59; font-family: sans-serif; font-size: 28px; font-weight: bold; margin-top: 10px;'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>", unsafe_allow_html=True)
+    with col_l3:
+        # İstikbal için alternatif kurumsal mobilya ikonu yerleştirildi
+        st.image("https://pixabay.com", width=80)
+st.markdown("---")
 
 # YAN MENÜ TASARIMI
 st.sidebar.markdown("<h2 style='color:#0f2c59; text-align:center;'>📱 Menü</h2>", unsafe_allow_html=True)
@@ -176,3 +180,6 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
                 st.markdown(f"**📞 İletişim:** {m_tel}")
                 st.markdown(f"**📍 Güncel Adres:** {m_adres}")
 
+    # ADIM 3: ÖDEME VE KAMPANYA
+    with st.container(border=True):
+        st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
