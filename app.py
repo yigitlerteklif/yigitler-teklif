@@ -3,9 +3,19 @@ import pandas as pd
 import sqlite3
 from datetime import datetime
 import urllib.parse
+import io
 
 # Kurumsal Sayfa Yapılandırması
 st.set_page_config(layout="wide", page_title="Yiğitler Teklif Programı", page_icon="🏢")
+
+def sablon_excel_olustur(kolonlar, ornek_satirlar):
+    """Verilen kolon başlıkları ve örnek satır(lar)ıyla indirilebilir bir xlsx şablonu üretir."""
+    buffer = io.BytesIO()
+    df = pd.DataFrame(ornek_satirlar, columns=kolonlar)
+    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+        df.to_excel(writer, index=False, sheet_name="Sablon")
+    buffer.seek(0)
+    return buffer
 
 # Özel CSS Tasarımları
 st.markdown("""
@@ -46,6 +56,10 @@ cursor.execute('''
     )''')
 cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMARY KEY)')
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS kampanyalar (
+        kampanya_adi TEXT PRIMARY KEY, kategori TEXT, gerekli_adet INTEGER, indirim_tutari REAL
+    )''')
 conn.commit()
 
 # 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI
@@ -69,6 +83,18 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
     c_ex1, c_ex2 = st.columns(2)
     with c_ex1:
         st.subheader("📦 1. Ürün Portföyü Yükle")
+        st.info("Sütun Başlıkları: 'urun_kodu', 'urun_adi', 'grup1_marka', 'grup2_kategori', 'brut_maliyet', 'fiyat_farki', 'satis_fiyati', 'lojistik_maliyet'")
+        st.download_button(
+            "📥 Örnek Şablonu İndir",
+            data=sablon_excel_olustur(
+                ["urun_kodu", "urun_adi", "grup1_marka", "grup2_kategori", "brut_maliyet", "fiyat_farki", "satis_fiyati", "lojistik_maliyet"],
+                [["URN001", "Örnek Koltuk Takımı", "Örnek Marka", "Oturma Grubu", 5000, 200, 7500, 150],
+                 ["URN002", "Örnek Buzdolabı", "Örnek Marka", "Beyaz Eşya", 8000, 300, 11500, 200]]
+            ),
+            file_name="urun_sablonu.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="urun_sablon_indir"
+        )
         urun_dosya = st.file_uploader("Ürün Excel Listesini Seçin", type=["xlsx", "xls"], key="u_key")
         if urun_dosya:
             df_u = pd.read_excel(urun_dosya)
@@ -84,6 +110,13 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
         st.write("---")
         st.subheader("🧑‍💼 3. Personel (Satış Temsilcisi) Listesi Yükle")
         st.info("Sütun Başlığı: 'personel_adi'")
+        st.download_button(
+            "📥 Örnek Şablonu İndir",
+            data=sablon_excel_olustur(["personel_adi"], [["Ahmet Yılmaz"], ["Ayşe Demir"]]),
+            file_name="personel_sablonu.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="personel_sablon_indir"
+        )
         per_dosya = st.file_uploader("Personel Excel Listesini Seçin", type=["xlsx", "xls"], key="p_key")
         if per_dosya:
             df_p = pd.read_excel(per_dosya)
@@ -96,6 +129,18 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
 
     with c_ex2:
         st.subheader("💳 2. Banka Taksit Matrisi Yükle")
+        st.info("Sütun Başlıkları: 'banka_adi', 'taksit_1', 'taksit_2', ..., 'taksit_12' (komisyon oranları % olarak)")
+        st.download_button(
+            "📥 Örnek Şablonu İndir",
+            data=sablon_excel_olustur(
+                ["banka_adi", "taksit_1", "taksit_2", "taksit_3", "taksit_4", "taksit_5", "taksit_6",
+                 "taksit_7", "taksit_8", "taksit_9", "taksit_10", "taksit_11", "taksit_12"],
+                [["Örnek Banka", 0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]]
+            ),
+            file_name="banka_komisyon_sablonu.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="banka_sablon_indir"
+        )
         komisyon_dosya = st.file_uploader("Banka Komisyon Excel Listesini Seçin", type=["xlsx", "xls"], key="k_key")
         if komisyon_dosya:
             df_k = pd.read_excel(komisyon_dosya)
@@ -110,6 +155,13 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
         st.write("---")
         st.subheader("🏪 4. Şube Listesi Yükle")
         st.info("Sütun Başlığı: 'sube_adi'")
+        st.download_button(
+            "📥 Örnek Şablonu İndir",
+            data=sablon_excel_olustur(["sube_adi"], [["Merkez Şube"], ["Bornova Şube"]]),
+            file_name="sube_sablonu.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            key="sube_sablon_indir"
+        )
         sube_dosya = st.file_uploader("Şube Excel Listesini Seçin", type=["xlsx", "xls"], key="s_key")
         if sube_dosya:
             df_s = pd.read_excel(sube_dosya)
@@ -119,6 +171,36 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
                 for _, row in df_s.iterrows():
                     cursor.execute("INSERT OR REPLACE INTO subeler VALUES (?)", (str(row['sube_adi']),))
                 conn.commit(); st.success("Şube Listesi Güncellendi!")
+
+    st.write("---")
+    st.subheader("🎁 5. Bundle Kampanya Listesi Yükle")
+    st.info(
+        "Sütun Başlıkları: 'kampanya_adi', 'kategori', 'gerekli_adet', 'indirim_tutari'. "
+        "Örnek: Kampanya1 / Beyaz Eşya / 2 / 5000 → '2 li Beyaz Eşya alımına 5000 TL indirim'. "
+        "'kategori' alanı ürünlerdeki 'grup2_kategori' ile birebir eşleşmelidir."
+    )
+    st.download_button(
+        "📥 Örnek Şablonu İndir",
+        data=sablon_excel_olustur(
+            ["kampanya_adi", "kategori", "gerekli_adet", "indirim_tutari"],
+            [["Kampanya1", "Beyaz Eşya", 2, 5000],
+             ["Kampanya2", "Oturma Grubu", 1, 1500]]
+        ),
+        file_name="kampanya_sablonu.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        key="kampanya_sablon_indir"
+    )
+    kampanya_dosya = st.file_uploader("Kampanya Excel Listesini Seçin", type=["xlsx", "xls"], key="kam_key")
+    if kampanya_dosya:
+        df_kam = pd.read_excel(kampanya_dosya)
+        st.dataframe(df_kam.head(2), use_container_width=True)
+        if st.button("🚀 Kampanyaları Güncelle"):
+            cursor.execute("DELETE FROM kampanyalar")
+            for _, row in df_kam.iterrows():
+                cursor.execute("INSERT OR REPLACE INTO kampanyalar VALUES (?, ?, ?, ?)",
+                               (str(row['kampanya_adi']), str(row['kategori']),
+                                int(row['gerekli_adet']), float(row['indirim_tutari'])))
+            conn.commit(); st.success("Kampanyalar Güncellendi!")
 
 # 4. SAYFA: TEKLİF OLUŞTURMA
 elif sayfa == "📝 Teklif Oluştur (Satış)":
@@ -179,6 +261,7 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
     with st.container(border=True):
         st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
         banka_df = pd.read_sql_query("SELECT * FROM banka_komisyonlari", conn)
+        kampanya_df = pd.read_sql_query("SELECT * FROM kampanyalar", conn)
         c_f1, c_f2, c_f3 = st.columns(3)
         with c_f1:
             if banka_df.empty:
@@ -189,7 +272,24 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
         with c_f2:
             taksit_sayisi = st.selectbox("Taksit Sayısı:", list(range(1, 13)))
         with c_f3:
-            bundle_indirim_tutari = st.number_input("Kampanya / Ek İndirim (TL):", min_value=0.0, value=0.0, step=50.0)
+            if kampanya_df.empty:
+                secilen_kampanya = None
+                manuel_indirim_tutari = st.number_input("Kampanya / Ek İndirim (TL):", min_value=0.0, value=0.0, step=50.0)
+            else:
+                kampanya_secenekleri = ["Yok (Manuel İndirim Gir)"] + kampanya_df['kampanya_adi'].tolist()
+                secim = st.selectbox("Bundle Kampanya:", kampanya_secenekleri)
+                if secim == "Yok (Manuel İndirim Gir)":
+                    secilen_kampanya = None
+                    manuel_indirim_tutari = st.number_input("Kampanya / Ek İndirim (TL):", min_value=0.0, value=0.0, step=50.0)
+                else:
+                    secilen_kampanya = secim
+                    manuel_indirim_tutari = 0.0
+        if secilen_kampanya:
+            kam_row = kampanya_df[kampanya_df['kampanya_adi'] == secilen_kampanya].iloc[0]
+            st.caption(
+                f"📌 Koşul: '{kam_row['kategori']}' kategorisinden en az {int(kam_row['gerekli_adet'])} adet ürün → "
+                f"{float(kam_row['indirim_tutari']):,.0f} ₺ indirim. Uygunluk, Adım 5'te sepetinize göre otomatik kontrol edilir."
+            )
 
     # ADIM 4: ÜRÜN SEÇİMİ VE SEPET
     with st.container(border=True):
@@ -215,6 +315,7 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
                     st.session_state.sepet.append({
                         "urun_kodu": urun_row['urun_kodu'],
                         "urun_adi": urun_row['urun_adi'],
+                        "grup2_kategori": urun_row['grup2_kategori'],
                         "adet": int(adet),
                         "satis_fiyati": float(urun_row['satis_fiyati']),
                         "brut_maliyet": float(urun_row['brut_maliyet']),
@@ -254,6 +355,25 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
             brut_toplam = float((sepet_df["adet"] * sepet_df["satis_fiyati"]).sum())
             toplam_brut_maliyet = float((sepet_df["adet"] * sepet_df["brut_maliyet"]).sum())
             toplam_lojistik = float((sepet_df["adet"] * sepet_df["lojistik_maliyet"]).sum())
+
+            # Bundle kampanya uygunluk kontrolü (sepetin son haline göre)
+            bundle_indirim_tutari = manuel_indirim_tutari
+            if secilen_kampanya:
+                kam_row = kampanya_df[kampanya_df['kampanya_adi'] == secilen_kampanya].iloc[0]
+                gerekli_adet = int(kam_row['gerekli_adet'])
+                kategori_adet = int(sepet_df.loc[sepet_df['grup2_kategori'] == kam_row['kategori'], 'adet'].sum())
+                if kategori_adet >= gerekli_adet:
+                    bundle_indirim_tutari = float(kam_row['indirim_tutari'])
+                    st.success(
+                        f"🎉 '{secilen_kampanya}' kampanyası uygulandı: '{kam_row['kategori']}' kategorisinden "
+                        f"{kategori_adet} adet var (gerekli: {gerekli_adet}) → {bundle_indirim_tutari:,.0f} ₺ indirim."
+                    )
+                else:
+                    bundle_indirim_tutari = 0.0
+                    st.warning(
+                        f"⚠️ '{secilen_kampanya}' kampanyası için '{kam_row['kategori']}' kategorisinden en az "
+                        f"{gerekli_adet} adet gerekiyor. Sepetinizde şu an {kategori_adet} adet var — indirim uygulanmadı."
+                    )
 
             musteri_fiyati = max(brut_toplam - bundle_indirim_tutari, 0.0)
 
