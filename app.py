@@ -166,7 +166,7 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
         else:
             with c1:
                 secilen_musteri = st.selectbox("Sistemde Kayıtlı Müşteriler:", musteri_df['isim'].tolist())
-                m_id = int(musteri_df[musteri_df['isim'] == secilen_musteri]['id'].values)
+                m_id = int(musteri_df.loc[musteri_df['isim'] == secilen_musteri, 'id'].iloc[0])
                 m_data = pd.read_sql_query(f"SELECT telefon, adres FROM musteriler WHERE id={m_id}", conn).iloc[0]
                 m_tel = m_data['telefon']
                 m_adres = m_data['adres']
