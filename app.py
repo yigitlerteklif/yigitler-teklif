@@ -7,15 +7,15 @@ import urllib.parse
 # Kurumsal Sayfa Yapılandırması
 st.set_page_config(layout="wide", page_title="Yiğitler Teklif Programı", page_icon="🏢")
 
-# Özel CSS Tasarımları
+# Özel CSS Tasarımları (Yazı Netliği İçin Güncellendi)
 st.markdown("""
     <style>
     .block-container {padding-top: 1.5rem; padding-bottom: 1.5rem;}
     .stRadio > div {flex-direction: row; gap: 15px;}
     div[data-testid="stExpander"] {border: 2px solid #ffcc00; border-radius: 8px; background-color: #fffdf2;}
     .metric-box {background-color: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1;}
-    .header-box {background-color: #0f2c59; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
-    .header-title {color: white; font-family: sans-serif; font-size: 26px; font-weight: bold; margin: 0; display: inline-block; vertical-align: middle;}
+    .header-box {background-color: #0f2c59; padding: 22px; border-radius: 10px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #1e3a8a;}
+    .header-title {color: #ffffff !important; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 28px; font-weight: 800 !important; margin: 0; display: inline-block; vertical-align: middle; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);}
     </style>
 """, unsafe_allow_html=True)
 
@@ -50,7 +50,7 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. SADECE YAZI TABANLI SADE VE ŞIK ÜST BAŞLIK BARI
+# 2. NETLEŞTİRİLMİŞ PARLAK BEYAZ ÜST BAŞLIK BARI
 st.markdown("""
     <div class='header-box'>
         <h1 class='header-title'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
@@ -179,8 +179,3 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
     # ADIM 3: ÖDEME VE KAMPANYA
     with st.container(border=True):
         st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
-        banka_df = pd.read_sql_query("SELECT * FROM banka_komisyonlari", conn)
-        c_f1, c_f2, c_f3 = st.columns(3)
-        with c_f1:
-            if banka_df.empty:
-                aktif_komisyon_orani = 0.0
