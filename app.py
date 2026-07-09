@@ -16,11 +16,10 @@ st.markdown("""
     .metric-box {background-color: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1;}
     .header-box {background-color: #0f2c59; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
     .header-title {color: white; font-family: sans-serif; font-size: 26px; font-weight: bold; margin: 0; display: inline-block; vertical-align: middle;}
-    .logo-text {background-color: white; color: #0f2c59; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block; margin: 0 15px; vertical-align: middle;}
     </style>
 """, unsafe_allow_html=True)
 
-# 1. VERİTABANI BAĞLANTISI (V6.4 - SQL Hatası Kesin Çözüldü)
+# 1. VERİTABANI BAĞLANTISI
 conn = sqlite3.connect("yigitler_bayi_v6.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -51,12 +50,10 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL BAŞLIK BARI
+# 2. SADECE YAZI TABANLI SADE VE ŞIK ÜST BAŞLIK BARI
 st.markdown("""
     <div class='header-box'>
-        <span class='logo-text'>⚙️ BOSCH</span>
         <h1 class='header-title'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
-        <span class='logo-text'>🛋️ İSTİKBAL</span>
     </div>
 """, unsafe_allow_html=True)
 
@@ -180,3 +177,10 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
                 st.markdown(f"**📍 Güncel Adres:** {m_adres}")
 
     # ADIM 3: ÖDEME VE KAMPANYA
+    with st.container(border=True):
+        st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
+        banka_df = pd.read_sql_query("SELECT * FROM banka_komisyonlari", conn)
+        c_f1, c_f2, c_f3 = st.columns(3)
+        with c_f1:
+            if banka_df.empty:
+                aktif_komisyon_orani = 0.0
