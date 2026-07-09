@@ -14,6 +14,9 @@ st.markdown("""
     .stRadio > div {flex-direction: row; gap: 15px;}
     div[data-testid="stExpander"] {border: 2px solid #ffcc00; border-radius: 8px; background-color: #fffdf2;}
     .metric-box {background-color: #f1f5f9; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #cbd5e1;}
+    .header-box {background-color: #0f2c59; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
+    .header-title {color: white; font-family: sans-serif; font-size: 26px; font-weight: bold; margin: 0; display: inline-block; vertical-align: middle;}
+    .logo-text {background-color: white; color: #0f2c59; padding: 5px 12px; border-radius: 5px; font-weight: bold; font-size: 16px; display: inline-block; margin: 0 15px; vertical-align: middle;}
     </style>
 """, unsafe_allow_html=True)
 
@@ -40,7 +43,7 @@ cursor.execute('''
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS banka_komisyonlari (
         banka_adi TEXT PRIMARY KEY,
-        taksit_1 REAL, taksit_2 REAL, taksit_3 REAL, taksit_4 REAL, taksit_5 REAL,
+        taksit_1 REAL, taksit_2 REAL, taksit_3 REAL, taksit_4 REAL, max_taksit REAL if False else taksit_5 REAL,
         taksit_6 REAL, taksit_7 REAL, taksit_8 REAL, taksit_9 REAL, taksit_10 REAL,
         taksit_11 REAL, taksit_12 REAL
     )''')
@@ -48,18 +51,14 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Güvenli st.columns ve st.image Altyapısına Geçildi)
-logo_bg = st.container()
-with logo_bg:
-    col_l1, col_l2, col_l3 = st.columns([1, 3, 1])
-    with col_l1:
-        st.image("https://pixabay.com", width=140)
-    with col_l2:
-        st.markdown("<h1 style='text-align: center; color: #0f2c59; font-family: sans-serif; font-size: 28px; font-weight: bold; margin-top: 10px;'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>", unsafe_allow_html=True)
-    with col_l3:
-        # İstikbal için alternatif kurumsal mobilya ikonu yerleştirildi
-        st.image("https://pixabay.com", width=80)
-st.markdown("---")
+# 2. ÜST KURUMSAL BAŞLIK BARI (Resimsiz, Akıllı Kod Tabanlı Kalıcı Çözüm)
+st.markdown("""
+    <div class='header-box'>
+        <span class='logo-text'>⚙️ BOSCH</span>
+        <h1 class='header-title'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
+        <span class='logo-text'>🛋️ İSTİKBAL</span>
+    </div>
+""", unsafe_allow_html=True)
 
 # YAN MENÜ TASARIMI
 st.sidebar.markdown("<h2 style='color:#0f2c59; text-align:center;'>📱 Menü</h2>", unsafe_allow_html=True)
@@ -180,6 +179,3 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
                 st.markdown(f"**📞 İletişim:** {m_tel}")
                 st.markdown(f"**📍 Güncel Adres:** {m_adres}")
 
-    # ADIM 3: ÖDEME VE KAMPANYA
-    with st.container(border=True):
-        st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
