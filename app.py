@@ -17,7 +17,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 1. VERİTABANI BAĞLANTISI (V6.3 - Hizalama Hatası Giderildi)
+# 1. VERİTABANI BAĞLANTISI
 conn = sqlite3.connect("yigitler_bayi_v6.db", check_same_thread=False)
 cursor = conn.cursor()
 
@@ -61,7 +61,7 @@ st.markdown("""
 st.sidebar.markdown("<h2 style='color:#0f2c59; text-align:center;'>📱 Menü</h2>", unsafe_allow_html=True)
 sayfa = st.sidebar.radio("İşlem Yapılacak Ekran:", ["📝 Teklif Oluştur (Satış)", "📊 Merkezi CRM & Takip Panel", "🔄 Merkez - Excel Yükleme Odası"])
 
-# 3. SAYFA: ÇOKLU EXCEL YÜKLEME ODASI
+# 3. SAYFA: ÇOKLU EXCEL YÜKLEME ODASI (İstediğiniz Sütun Başlığı Açıklamaları Eklendi)
 if sayfa == "🔄 Merkez - Excel Yükleme Odası":
     st.header("🔄 Gelişmiş Excel Veri Giriş ve Finans Odası")
     st.markdown("---")
@@ -69,6 +69,8 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
     c_ex1, c_ex2 = st.columns(2)
     with c_ex1:
         st.subheader("📦 1. Ürün Portföyü Yükle")
+        # İsteğiniz üzerine eklenen 1 nolu kutu açıklaması
+        st.info("Sütun Başlıkları: 'urun_kodu', 'urun_adi', 'grup1_marka', 'grup2_kategori', 'brut_maliyet', 'fiyat_farki', 'satis_fiyati', 'lojistik_maliyet'")
         urun_dosya = st.file_uploader("Ürün Excel Listesini Seçin", type=["xlsx", "xls"], key="u_key")
         if urun_dosya:
             df_u = pd.read_excel(urun_dosya)
@@ -96,6 +98,8 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
 
     with c_ex2:
         st.subheader("💳 2. Banka Taksit Matrisi Yükle")
+        # İsteğiniz üzerine eklenen 2 nolu kutu açıklaması
+        st.info("Sütun Başlıkları: 'banka_adi', 'taksit_1', 'taksit_2', ..., 'taksit_12'")
         komisyon_dosya = st.file_uploader("Banka Komisyon Excel Listesini Seçin", type=["xlsx", "xls"], key="k_key")
         if komisyon_dosya:
             df_k = pd.read_excel(komisyon_dosya)
@@ -124,7 +128,7 @@ if sayfa == "🔄 Merkez - Excel Yükleme Odası":
 elif sayfa == "📝 Teklif Oluştur (Satış)":
     st.subheader("📝 Adım Adım Güvenli Teklif Hazırlama")
     
-    # ADIM 1: OPERASYONEL BİLGİLER (ŞUBE VE PERSONEL SEÇİMİ)
+    # ADIM 1: OPERASYONEL BİLGİLER
     with st.container(border=True):
         st.markdown("#### 🏪 Adım 1: Şube ve Satış Temsilcisi Bilgisi")
         sube_list_df = pd.read_sql_query("SELECT * FROM subeler", conn)
@@ -166,16 +170,9 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
             with c1:
                 secilen_musteri = st.selectbox("Sistemde Kayıtlı Müşteriler:", musteri_df['isim'].tolist())
                 m_id = int(musteri_df[musteri_df['isim'] == secilen_musteri]['id'].values)
-                m_data = pd.read_sql_query(f"SELECT telefon, adres FROM musteriler WHERE id={m_id}", conn).iloc[0]
+                m_data = pd.read_sql_query(f"SELECT telefon, adres FROM musteriler WHERE id={m_id}", conn).iloc
                 m_tel = m_data['telefon']
                 m_adres = m_data['adres']
             with c2:
                 st.write("")
                 st.markdown(f"**📞 İletişim:** {m_tel}")
-                st.markdown(f"**📍 Güncel Adres:** {m_adres}")
-
-    # ADIM 3: ÖDEME VE KAMPANYA (Hizalama Hatası Çözüldü)
-    with st.container(border=True):
-        st.markdown("#### 💳 Adım 3: Ödeme Yöntemi ve Kampanya Tanımı")
-        banka_df = pd.read_sql_query("SELECT * FROM banka_komisyonlari", conn)
-        c_f1, c_f2, c_f3 = st.columns(3)
