@@ -48,12 +48,12 @@ cursor.execute('CREATE TABLE IF NOT EXISTS personeller (personel_adi TEXT PRIMAR
 cursor.execute('CREATE TABLE IF NOT EXISTS subeler (sube_adi TEXT PRIMARY KEY)')
 conn.commit()
 
-# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Kalıcı ve Resmi Linklerle Yenilendi)
+# 2. ÜST KURUMSAL LOGO VE BAŞLIK BARI (Hata Vermeyen Yeni Resim Linkleri)
 st.markdown("""
     <div style='display: flex; justify-content: space-between; align-items: center; background-color: #0f2c59; padding: 15px 30px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>
-        <img src='https://githubusercontent.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
+        <img src='https://pixabay.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
         <h1 style='text-align: center; color: white; margin: 0; font-family: sans-serif; font-size: 26px; font-weight: bold; letter-spacing: 1px;'>🏢 YİĞİTLER TEKLİF & CRM YÖNETİMİ</h1>
-        <img src='https://githubusercontent.com' width='130' style='background-color:white; padding:5px; border-radius:3px;'>
+        <img src='https://pixabay.com' width='60' style='background-color:white; padding:5px; border-radius:3px; margin-right:30px;'>
     </div>
 """, unsafe_allow_html=True)
 
@@ -174,3 +174,5 @@ elif sayfa == "📝 Teklif Oluştur (Satış)":
             with c2:
                 st.write("")
                 st.markdown(f"**📞 İletişim:** {m_tel}")
+                st.markdown(f"**📍 Güncel Adres:** {m_adres}")
+
